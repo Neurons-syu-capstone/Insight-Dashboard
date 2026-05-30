@@ -143,9 +143,9 @@ export default function RiskRadarPage() {
 
               <div style={{ marginBottom: 32 }}>
                 <div className="section-title">
-                  경보 목록
+                  상품
                   {currentProduct && (
-                    <span style={{ fontSize: 13, fontWeight: 400, color: "#888", marginLeft: 8 }}>
+                    <span style={{ fontSize: 20, fontWeight: 600, color: "#111827", marginLeft: 8 }}>
                       — {currentProduct.title}
                     </span>
                   )}
