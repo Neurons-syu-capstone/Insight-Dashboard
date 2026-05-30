@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { fetchProducts, fetchBrands } from "../api/scoreboardApi"
 import RadarChart    from "../components/scoreboard/RadarChart"
 import ScoreCard     from "../components/scoreboard/ScoreCard"
@@ -55,27 +55,48 @@ const BRAND_COLORS = {
   "NINE WEST": "#C71585",
 }
 
+const SESSION_KEY = "scoreboard_state"
+const getSaved = () => {
+  try { return JSON.parse(sessionStorage.getItem(SESSION_KEY) || "{}") } catch { return {} }
+}
+
 export default function ScoreboardPage() {
   const [brands,          setBrands]          = useState([])
   const [products,        setProducts]        = useState([])
-  const [selectedBrand,   setSelectedBrand]   = useState("")
-  const [searchQuery,     setSearchQuery]     = useState("")
-  const [selectedProduct, setSelectedProduct] = useState(null)
-  const [selectedCat,     setSelectedCat]     = useState(null)
+  const [selectedBrand,   setSelectedBrand]   = useState(() => getSaved().selectedBrand   || "")
+  const [searchQuery,     setSearchQuery]     = useState(() => getSaved().searchQuery     || "")
+  const [selectedProduct, setSelectedProduct] = useState(() => getSaved().selectedProduct || null)
+  const [selectedCat,     setSelectedCat]     = useState(() => getSaved().selectedCat     || null)
   const [loading,         setLoading]         = useState(false)
+
+  const prevFiltersRef = useRef({ selectedBrand: null, searchQuery: null })
 
   useEffect(() => {
     fetchBrands().then(setBrands).catch(console.error)
   }, [])
 
   useEffect(() => {
-    setSelectedProduct(null)
-    setSelectedCat(null)
+    try {
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify({ selectedBrand, searchQuery, selectedProduct, selectedCat }))
+    } catch {}
+  }, [selectedBrand, searchQuery, selectedProduct, selectedCat])
+
+  useEffect(() => {
+    const prev = prevFiltersRef.current
+    const filtersChanged = prev.selectedBrand !== null &&
+      (prev.selectedBrand !== selectedBrand || prev.searchQuery !== searchQuery)
+    prevFiltersRef.current = { selectedBrand, searchQuery }
+
     setLoading(true)
     fetchProducts({ brand: selectedBrand || null, search: searchQuery || null })
       .then(setProducts)
       .catch(console.error)
       .finally(() => setLoading(false))
+
+    if (filtersChanged) {
+      setSelectedProduct(null)
+      setSelectedCat(null)
+    }
   }, [selectedBrand, searchQuery])
 
   const handleSelectProduct = (product) => {
@@ -92,7 +113,7 @@ export default function ScoreboardPage() {
         position: "sticky", top: 52, zIndex: 100, boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
       }}>
         <span style={{ fontSize: 24 }}>👟</span>
-        <span style={{ fontSize: 18, fontWeight: 800, color: "#111827" }}>
+        <span style={{ fontSize: 24, fontWeight: 800, color: "#111827" }}>
           신발 리뷰 다차원 만족도 스코어보드
         </span>
         <span style={{
@@ -112,6 +133,9 @@ export default function ScoreboardPage() {
           display: "flex", flexDirection: "column", overflowY: "hidden",
         }}>
           <div style={{ padding: "16px 16px 0", borderBottom: "1px solid #f3f4f6" }}>
+            <p style={{ fontSize: 25, fontWeight: 800, color: "#6b7280", letterSpacing: 1.5, textAlign: "center", margin: "0 0 12px" }}>
+              상품 선택
+            </p>
             <input
               type="text" placeholder="상품명 검색..."
               value={searchQuery} onChange={e => setSearchQuery(e.target.value)}

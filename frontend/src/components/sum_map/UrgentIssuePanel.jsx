@@ -18,7 +18,8 @@ export default function UrgentIssuePanel({ urgentIssues }) {
 
   return (
     <section style={{ marginBottom: 28 }}>
-      <div style={{ fontSize: 10, color: 'var(--accent-red)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12 }}>
+      <div style={{ fontSize: 17, fontWeight: 700, color: 'var(--accent-red)',
+        letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12 }}>
         ⚡ 긴급 이슈
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>

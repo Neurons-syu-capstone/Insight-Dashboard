@@ -26,9 +26,17 @@ class ReviewProcessor:
         else:
             products["title"] = products["product_id"]
 
+        cols = ["product_id", "title", "review_count"]
+        if "brand" in self.df.columns:
+            brands_df = self.df.drop_duplicates("_product")[["_product", "brand"]]
+            brands_df = brands_df.rename(columns={"_product": "product_id"})
+            products = products.merge(brands_df, on="product_id", how="left")
+            products["brand"] = products["brand"].fillna("")
+            cols = ["product_id", "title", "brand", "review_count"]
+
         return (
             products.sort_values("review_count", ascending=False)
-            [["product_id", "title", "review_count"]]
+            [cols]
             .to_dict("records")
         )
 

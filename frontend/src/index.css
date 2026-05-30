@@ -51,6 +51,17 @@ a { color: #1565c0; text-decoration: none; }
   box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
 
+/* Risk Radar 페이지 배경/카드 색 반전 */
+.rr-page {
+  background: #fff;
+  min-height: calc(100vh - 52px);
+}
+.rr-page .card {
+  background: #f5f6fa;
+  box-shadow: none;
+  border: 1px solid #e5e7eb;
+}
+
 .badge {
   display: inline-flex;
   align-items: center;

@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 const ROUTES = [
   { path: '/', label: '🔔 리스크 레이더' },
   { path: '/scoreboard', label: '📊 스코어보드' },
-  { path: '/sum-map', label: '🗺 리뷰 요약' },
+  { path: '/sum-map', label: '🗺 리뷰 키워드 맵' },
   { path: '/consultant', label: '🤖 AI 컨설턴트' },
 ]
 
